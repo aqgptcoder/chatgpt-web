@@ -7,8 +7,8 @@ function scheduleCron() {
         schedule_reset_count()
     });
 
-    schedule.scheduleJob('0/10 * * * * *', function () {
-        console.log('定时任务-测试:' + new Date());
+    schedule.scheduleJob('0 0 0/1 * * *', function () {
+        console.log('定时任务-删除过期数据:' + new Date());
         schedule_remove_exprie()
     });
 }
