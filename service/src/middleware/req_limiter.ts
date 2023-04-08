@@ -4,7 +4,7 @@ import { getFPByfingerprint, insertFP, updateFP, countDocuments } from '../middl
 const req_limiter = function (req, res) {
     const MONGODB_URL = process.env.MONGODB_URL
     const COUNT = !isNaN(+process.env.COUNT) ? +process.env.COUNT : 10 //每日使用上限，默认10次
-    const MAX_NUMBER = !isNaN(+process.env.MAX_NUMBER) ? +process.env.MAX_NUMBER : 10 //用户最大数量，防止滥用，默认100个
+    const MAX_NUMBER = !isNaN(+process.env.MAX_NUMBER) ? +process.env.MAX_NUMBER : 100 //用户最大数量，防止滥用，默认100个
     if (isNotEmptyString(MONGODB_URL)) {
         try {
             const sign = req.header('Sign')
