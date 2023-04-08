@@ -8,8 +8,11 @@ const service = axios.create({
 service.interceptors.request.use(
   (config) => {
     const token = useAuthStore().token
+    const sign = useAuthStore().sign
     if (token)
       config.headers.Authorization = `Bearer ${token}`
+    if (sign)
+      config.headers.Sign = `${sign}` 
     return config
   },
   (error) => {

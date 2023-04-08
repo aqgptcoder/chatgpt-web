@@ -12,6 +12,10 @@ const appStore = useAppStore()
 const chatStore = useChatStore()
 const authStore = useAuthStore()
 
+authStore.getFingerprint().then(sign=>{
+  authStore.setSign(sign+"")
+})
+
 router.replace({ name: 'Chat', params: { uuid: chatStore.active } })
 
 const { isMobile } = useBasicLayout()

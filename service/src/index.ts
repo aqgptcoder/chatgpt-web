@@ -4,10 +4,15 @@ import type { ChatMessage } from './chatgpt'
 import { chatConfig, chatReplyProcess, currentModel } from './chatgpt'
 import { auth } from './middleware/auth'
 import { limiter } from './middleware/limiter'
+import { req_limiter } from './middleware/req_limiter'
+import { scheduleCron } from './schedule'
 import { isNotEmptyString } from './utils/is'
 
 const app = express()
 const router = express.Router()
+
+//定时任务
+scheduleCron()
 
 app.use(express.static('public'))
 app.use(express.json())
@@ -19,7 +24,7 @@ app.all('*', (_, res, next) => {
   next()
 })
 
-router.post('/chat-process', [auth, limiter], async (req, res) => {
+router.post('/chat-process', [auth, req_limiter, limiter ], async (req, res) => {
   res.setHeader('Content-type', 'application/octet-stream')
 
   try {
