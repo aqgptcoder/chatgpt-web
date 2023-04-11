@@ -10,6 +10,10 @@ export function isNotEmptyString(value: any): boolean {
   return typeof value === 'string' && value.length > 0
 }
 
+export function isEmptyString(value: any): boolean {
+  return typeof value !== 'string' || value.length == 0
+}
+
 export function isBoolean<T extends boolean>(value: T | unknown): value is boolean {
   return Object.prototype.toString.call(value) === '[object Boolean]'
 }
