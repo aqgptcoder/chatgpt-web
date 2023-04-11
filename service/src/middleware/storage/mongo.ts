@@ -40,10 +40,8 @@ export async function countDocuments() {
 }
 
 export async function removeExprieFP(exprie_day) {
-    let date = new Date();
-    date.setMinutes(date.getMinutes() - new Date().getTimezoneOffset() + 480);
     const query = {
-        update_time: { $lte: date.getTime() - exprie_day * 24 * 60 * 1000 }
+        update_time: { $lte: new Date().getTime() - exprie_day * 24 * 60 * 60 * 1000 }
     }
     return await fpCol.deleteMany(query)
 }
