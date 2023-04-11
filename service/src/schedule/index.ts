@@ -11,11 +11,6 @@ function scheduleCron() {
         console.log('定时任务-删除过期数据:' + new Date());
         schedule_remove_exprie()
     });
-
-    schedule.scheduleJob('* * * * * *', function () {
-        console.log('定时任务-删除过期数据(测试):' + new Date());
-        schedule_remove_exprie()
-    });
 }
 
 export { scheduleCron }
