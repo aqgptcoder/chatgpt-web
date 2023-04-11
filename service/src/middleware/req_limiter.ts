@@ -1,7 +1,7 @@
 import { isNotEmptyString } from '../utils/is'
 import { getFPByfingerprint, insertFP, updateFP, countDocuments } from '../middleware/storage/mongo'
 
-const req_limiter = function (req, res) {
+const req_limiter = async (req, res, next) => {
     const MONGODB_URL = process.env.MONGODB_URL
     const COUNT = !isNaN(+process.env.COUNT) ? +process.env.COUNT : 10 //每日使用上限，默认10次
     const MAX_NUMBER = !isNaN(+process.env.MAX_NUMBER) ? +process.env.MAX_NUMBER : 100 //用户最大数量，防止滥用，默认100个
@@ -21,6 +21,7 @@ const req_limiter = function (req, res) {
                             return
                         } else {
                             updateFP(sign)
+                            next()
                         }
                     } else {
                         countDocuments().then(num => {
@@ -33,6 +34,7 @@ const req_limiter = function (req, res) {
                                 return
                             } else {
                                 insertFP(sign, COUNT)
+                                next()
                             }
                         })
                     }
