@@ -9,36 +9,31 @@ const req_limiter = async (req, res, next) => {
     if (isEmptyString(MONGODB_URL)) {
         next()
     }
-    try {
-        // sign为空
-        if (isEmptyString(sign)) {
-            countDocuments().then(num => {
-                if (num > USER_MAX_NUMBER) {
-                    throw new Error('Error: 免费用户已达上限，可购买专属域名解除限制 | Free users have reached the limit')
-                } else {
-                    insertFP(sign, PER_DAY_COUNT)
-                    next()
-                }
-            })
-        }
-        // sign不为空
-        if (isNotEmptyString(sign)) {
-            getFPByfingerprint(sign).then(fp => {
-                if (fp != null) {
-                    const per_count = fp.per_count;
-                    if (per_count <= 0) {
-                        throw new Error('Error: 已超出每日' + PER_DAY_COUNT + '次免费次数，可购买专属域名解除限制 | ' + PER_DAY_COUNT + ' free times per day')
-                    } else {
-                        updateFP(sign)
-                        next()
-                    }
-                } else {
-                    throw new Error('Error: 系统错误！ | System Error!')
-                }
-            })
-        }
-    } catch (error) {
-        res.status(200).send({ status: 'Error', message: error.message ?? 'Please authenticate.', data: null })
+    // sign为空
+    if (isEmptyString(sign)) {
+        countDocuments().then(num => {
+            if (num > USER_MAX_NUMBER) {
+                let msg = 'Error: 免费用户已达上限，可购买专属域名解除限制 | Free users have reached the limit'
+                res.status(200).send({ status: 'Error', message: msg ?? 'Please authenticate.', data: null })
+                res.end()
+                return
+            }
+            insertFP(sign, PER_DAY_COUNT)
+            next()
+        })
+    }
+    // sign不为空
+    if (isNotEmptyString(sign)) {
+        getFPByfingerprint(sign).then(fp => {
+            if (fp == null || fp.per_count <= 0) {
+                let msg = 'Error: 已超出每日' + PER_DAY_COUNT + '次免费次数，可购买专属域名解除限制 | ' + PER_DAY_COUNT + ' free times per day'
+                res.status(200).send({ status: 'Error', message: msg ?? 'Please authenticate.', data: null })
+                res.end()
+                return
+            }
+            updateFP(sign)
+            next()
+        })
     }
 }
 
